@@ -10,41 +10,28 @@ const channelId = process.env.CHANNELID; // 잡담방
 const musicChannelId = process.env.MUSIC_CHANNEL_ID; //음악방송
 const voiceChannelId = process.env.VOICE_CHANNEL_ID; // 보이스
 
-client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-  scheduleMessages();
-});
-
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  if (interaction.commandName === "ping") {
-    await interaction.reply("Pong!");
-  }
-});
-
 function scheduleMessages() {
   const channel = client.channels.cache.get(channelId);
   const musicChannel = client.channels.cache.get(musicChannelId);
   const voiceChannel = client.channels.cache.get(voiceChannelId);
 
-  const job0 = schedule.scheduleJob("0 0 22 * * 5", () => {
+  const job0 = schedule.scheduleJob("0 0 22 * * 4", () => {
     channel.send(
-      "@everyone 안녕하세요! GunBot이 알려드립니다. \n금요일은 자율출퇴근날 입니다. 7~12시 사이에 출근 해주세요.\n출근 찍는 것은 잊지마세요~"
+      "@everyone 안녕하세요! GunBot이 알려드립니다. 금요일은 **자율출퇴근날** 입니다. 7~12시 사이에 출근 해주세요.\n출근 찍는 것은 잊지마세요~"
     );
   });
 
   // 아침 8시 58분에 메시지 보내기
-  const job1 = schedule.scheduleJob("0 55 23 * * 1-5", () => {
+  const job1 = schedule.scheduleJob("0 55 23 * * 0-4", () => {
     channel.send(
-      "@everyone 안녕하세요! GunBot 입니다.\n지금은 8시 55분 입니다.\n 여러분, 제발 출근 좀 찍어주세요. 제가 너무 괴로워요..."
+      "@everyone 안녕하세요! GunBot이 **8시 55분**임을 알려드립니다. \n여러분, 출근은 잘 하셨나요? 부탁하나만 할께요.. 제발 출근 좀 찍어주세요. 제가 너무 괴로워요..."
     );
   });
 
   // 집중근무 시간
   const job2 = schedule.scheduleJob("0 0 1 * * 1-5", () => {
     channel.send(
-      "@everyone \n 지금은 10시 '집중근무시간' 입니다! \n 12시까지 구두로 전달 & 채팅 지양부탁드립니다.\n 동료의 집중 시간을 존중해주세요."
+      "@everyone GunBot이 알립니다. 지금은 10시 **'집중근무시간'** 입니다! \n 12시까지 구두로 전달 & 채팅 지양부탁드립니다.\n 말을 꺼내기 전에 오전에 당장 필요한 말인지 한번만 더 고민해주세요.\n**동료의 집중 시간을 존중해주세요~**"
     );
 
     if (voiceChannel) {
@@ -57,7 +44,7 @@ function scheduleMessages() {
 
       // 노래 재생 등 작업을 수행할 수 있습니다.
       musicChannel.send(
-        "집중근무시간에 블루투스 스피커를 연결하고 '노래하는하리보'봇을 통해 음악을 틀어보세요\n!!help를 치면 명령어가 나옵니다.\n예시 \n!!멜론차트\n!!멜론차트 <1~100 사이 숫자> \n!play <노래제목>\n!!play <유튜브 URL>"
+        "집중근무시간에 블루투스를 연결하고 '노래하는하리보'봇을 통해 음악을 틀어보세요\n음악방송 채널에 접속하고, 음악선곡채널에 명령어를 사용하면 됩니다.\n음악 명령어 예시 - (!!help를 치면 명령어 목록이 나옵니다.)\n!!멜론차트\n!!멜론차트 <1~100 사이 숫자> \n!play <노래제목>\n!!play <유튜브 URL>"
       );
 
       // 일정 시간 뒤에 보이스 채널에서 퇴장
@@ -80,10 +67,23 @@ function scheduleMessages() {
   // 퇴근시간
   const job4 = schedule.scheduleJob("0 0 9 * * 1-5", () => {
     channel.send(
-      "@everyone GunBot이 기쁜소식 알려드립니다.\n 지금은 18시 퇴근시간 입니다! 고생하셨습니다~\n"
+      "@everyone GunBot이 기쁜소식 알려드립니다.\n 지금은 18시 퇴근시간 입니다. 퇴근 찍고가세요! 고생하셨습니다~"
     );
   });
 }
+
+client.on("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+  scheduleMessages();
+});
+
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  if (interaction.commandName === "ping") {
+    await interaction.reply("Pong!");
+  }
+});
 
 client.on("message", (message) => {
   if (message.content.startsWith("/안녕")) {
