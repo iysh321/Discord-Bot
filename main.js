@@ -77,11 +77,24 @@ function scheduleMessages() {
     );
   });
 
-  // 퇴근시간 PM 06:30
+  // 퇴근시간 PM 06:00
   schedule.scheduleJob("0 0 9 * * 1-5", () => {
     channel.send(
       "@here GunBot이 기쁜소식 알려드립니다.\n 지금은 18시 퇴근시간 입니다. 퇴근 찍고가세요! 고생하셨습니다~"
     );
+  });
+
+  //메세지 정리
+  schedule.scheduleJob("0 30 9 * * 1-5", () => {
+    channel.messages
+      .fetch({ limit: 100 })
+      .then((messages) => {
+        const botMessages = messages.filter((msg) => msg.author.bot);
+        message.channel.bulkDelete(botMessages);
+      })
+      .catch((error) => {
+        console.error("Error fetching messages:", error);
+      });
   });
 }
 
